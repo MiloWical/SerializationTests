@@ -284,9 +284,9 @@ void ProcessOptionsWithNewtonsoftCustomComponents()
   Console.WriteLine(serializedTest);
   Console.WriteLine();
 
-  // Console.WriteLine("After deserialization:");
-  // Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest));
-  // Console.WriteLine();
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest, new OptionConverter<int>()));
+  Console.WriteLine();
 
   Console.WriteLine("===== OPTION.SOME (Newtonsoft.Json Converter) =====");
   Console.WriteLine();
