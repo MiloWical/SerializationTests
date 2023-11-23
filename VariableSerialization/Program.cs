@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using VariableSerialization;
 using System.Text.Json;
 using WicalWare.Components.ResultCs;
+using VariableSerialization.Newtonsoft.Json;
 
 var defaultColor = Console.ForegroundColor;
 
@@ -13,9 +14,10 @@ var systemTextSerializerOptions = new JsonSerializerOptions
 
 try
 {
-  ProcessStandardClasses();
-  ProcessSerializableClasses();
-  ProcessOptions();
+  // ProcessStandardClasses();
+  // ProcessSerializableClasses();
+  // ProcessOptions();
+  ProcessOptionsWithNewtonsoftCustomComponents();
 }
 catch(Exception e)
 {
@@ -244,7 +246,7 @@ void ProcessOptions()
   Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest));
   Console.WriteLine();
 
-  Console.WriteLine("===== OPTION.SOME (System.Text.Json) =====");
+  Console.WriteLine("===== OPTION.SOME (Newtonsoft.Json) =====");
   Console.WriteLine();
 
   optionTest = Option<int>.Some(55);
@@ -262,4 +264,46 @@ void ProcessOptions()
   Console.WriteLine("After deserialization:");
   Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest)!.UnwrapOr(-1));
   Console.WriteLine();
+}
+
+void ProcessOptionsWithNewtonsoftCustomComponents()
+{
+  Console.ForegroundColor = ConsoleColor.DarkYellow;
+  Console.WriteLine("===== OPTION.NONE (Newtonsoft.Json Converter) =====");
+  Console.WriteLine();
+
+  var optionTest = Option<int>.None();
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(optionTest);
+  Console.WriteLine();
+
+  var serializedTest = JsonConvert.SerializeObject(optionTest, new OptionConverter<int>());
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  // Console.WriteLine("After deserialization:");
+  // Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest));
+  // Console.WriteLine();
+
+  Console.WriteLine("===== OPTION.SOME (Newtonsoft.Json Converter) =====");
+  Console.WriteLine();
+
+  optionTest = Option<int>.Some(55);
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(optionTest.UnwrapOr(-1));
+  Console.WriteLine();
+
+  serializedTest = JsonConvert.SerializeObject(optionTest, new OptionConverter<int>());
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  // Console.WriteLine("After deserialization:");
+  // Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest)!.UnwrapOr(-1));
+  // Console.WriteLine();
 }
