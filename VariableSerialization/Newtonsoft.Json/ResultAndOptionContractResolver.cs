@@ -22,9 +22,14 @@ public class ResultAndOptionContractResolver : DefaultContractResolver
 
     jsonContract = base.CreateContract(type);
 
-    JsonConverter? jsonConverter = null;
-
     var genericType = type.GetGenericTypeDefinition();
+
+    if(genericType != typeof(Option<>) && genericType != typeof(Result<,>))
+    {
+      return jsonContract;
+    } 
+
+    JsonConverter? jsonConverter = null;
 
     if (genericType == typeof(Option<>))
     {
