@@ -13,15 +13,17 @@ public class OptionConverter<T> : JsonConverter
 
   public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
   {
-    var option = new object();
-
     JObject json = JObject.Load(reader);
 
-    var kind = Enum.Parse(typeof(OptionKind), json["Kind"]!.ToString());
-
-    //Convert.ChangeType(existingValue, objectType);
-
-    return option;
+    var kind = Enum.Parse<OptionKind>(json["Kind"]!.ToString());
+        
+    if(kind == OptionKind.Some)
+    {
+      T val = JsonConvert.DeserializeObject<T>(json["Some"]!.ToString())!;
+      return Option<T>.Some(val);
+    }
+    
+    return Option<T>.None();
   }
 
   public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
