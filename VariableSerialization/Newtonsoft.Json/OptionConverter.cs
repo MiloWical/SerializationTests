@@ -11,7 +11,7 @@ public class OptionConverter<T> : JsonConverter
     return objectType == typeof(Option<T>);
   }
 
-  public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+  public override Option<T> ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
   {
     JObject json = JObject.Load(reader);
 
@@ -19,11 +19,15 @@ public class OptionConverter<T> : JsonConverter
         
     if(kind == OptionKind.Some)
     {
-      T val = JsonConvert.DeserializeObject<T>(json["Some"]!.ToString())!;
+      T val = json["Some"]!.ToObject<T>()!;
       return Option<T>.Some(val);
     }
-    
-    return Option<T>.None();
+    else if (kind == OptionKind.None)
+    {
+      return Option<T>.None();
+    }
+
+    throw new ArgumentException($"Count not convert {kind} to {objectType}");
   }
 
   public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)

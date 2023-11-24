@@ -18,8 +18,9 @@ try
   // ProcessSerializableClasses();
   // ProcessOptions();
   ProcessOptionsWithNewtonsoftCustomComponents();
+  ProcessResultsWithNewtonsoftCustomComponents();
 }
-catch(Exception e)
+catch (Exception e)
 {
   Console.WriteLine(e);
 }
@@ -29,7 +30,7 @@ finally
 }
 
 
-void ProcessStandardClasses() 
+void ProcessStandardClasses()
 {
   Console.ForegroundColor = ConsoleColor.Cyan;
   Console.WriteLine("===== VARIABLES (System.Text.Json) =====");
@@ -306,4 +307,96 @@ void ProcessOptionsWithNewtonsoftCustomComponents()
   Console.WriteLine("After deserialization:");
   Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest, new OptionConverter<int>())!.UnwrapOr(-1));
   Console.WriteLine();
+
+  Console.ForegroundColor = ConsoleColor.DarkCyan;
+  Console.WriteLine("===== OPTION.SOME (Newtonsoft.Json ContractResolver) =====");
+  Console.WriteLine();
+
+  var serializerSettings = new JsonSerializerSettings
+  {
+    ContractResolver = new ResultContractResolver()
+  };
+
+  optionTest = Option<int>.Some(99);
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(optionTest.UnwrapOr(-1));
+  Console.WriteLine();
+
+  serializedTest = JsonConvert.SerializeObject(optionTest, serializerSettings);
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(JsonConvert.DeserializeObject<Option<int>>(serializedTest, serializerSettings)!.UnwrapOr(-1));
+  Console.WriteLine();
+}
+
+void ProcessResultsWithNewtonsoftCustomComponents()
+{
+  Console.ForegroundColor = ConsoleColor.DarkGreen;
+  Console.WriteLine("===== RESULT.ERR (Newtonsoft.Json Converter) =====");
+  Console.WriteLine();
+
+  var resultTest = Result<int, string>.Err("Bad mojo.");
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(resultTest);
+  Console.WriteLine();
+
+  var serializedTest = JsonConvert.SerializeObject(resultTest, new ResultConverter<int, string>());
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(JsonConvert.DeserializeObject<Result<int, string>>(serializedTest, new ResultConverter<int, string>())!.UnwrapErr());
+  Console.WriteLine();
+
+  // Console.WriteLine("===== RESULT.OK (Newtonsoft.Json Converter) =====");
+  // Console.WriteLine();
+
+  // resultTest = Result<int, string>.Ok(55);
+
+  // Console.WriteLine("Before serialization:");
+  // Console.WriteLine(resultTest.UnwrapOr(-1));
+  // Console.WriteLine();
+
+  // serializedTest = JsonConvert.SerializeObject(resultTest, new ResultConverter<int, string>());
+
+  // Console.WriteLine("Serialized object:");
+  // Console.WriteLine(serializedTest);
+  // Console.WriteLine();
+
+  // Console.WriteLine("After deserialization:");
+  // Console.WriteLine(JsonConvert.DeserializeObject<Result<int, string>>(serializedTest, new ResultConverter<int, string>())!.UnwrapOr(-1));
+  // Console.WriteLine();
+
+  // Console.ForegroundColor = ConsoleColor.DarkRed;
+  // Console.WriteLine("===== RESULT.OK (Newtonsoft.Json ContractResolver) =====");
+  // Console.WriteLine();
+
+  // var serializerSettings = new JsonSerializerSettings
+  // {
+  //   ContractResolver = new ResultContractResolver()
+  // };
+
+  // resultTest =Result<int, string>.Ok(99);
+
+  // Console.WriteLine("Before serialization:");
+  // Console.WriteLine(resultTest.UnwrapOr(-1));
+  // Console.WriteLine();
+
+  // serializedTest = JsonConvert.SerializeObject(resultTest, serializerSettings);
+
+  // Console.WriteLine("Serialized object:");
+  // Console.WriteLine(serializedTest);
+  // Console.WriteLine();
+
+  // Console.WriteLine("After deserialization:");
+  // Console.WriteLine(JsonConvert.DeserializeObject<Result<int, string>>(serializedTest, serializerSettings)!.UnwrapOr(-1));
+  // Console.WriteLine();
 }

@@ -11,9 +11,24 @@ public class ResultConverter<T,E> : JsonConverter
     return objectType == typeof(Result<T,E>);
   }
 
-  public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+  public override Result<T,E> ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
   {
-    throw new NotImplementedException();
+    JObject json = JObject.Load(reader);
+
+    var kind = Enum.Parse<ResultKind>(json["Kind"]!.ToString());
+
+    if (kind == ResultKind.Ok)
+    {
+      T val = json["Ok"]!.ToObject<T>()!;
+      return Result<T, E>.Ok(val);
+    }
+    else if (kind == ResultKind.Err)
+    {
+      E err = json["Err"]!.ToObject<E>()!;
+      return Result<T, E>.Err(err);
+    }
+
+    throw new ArgumentException($"Count not convert {kind} to {objectType}");
   }
 
   public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
@@ -22,18 +37,21 @@ public class ResultConverter<T,E> : JsonConverter
 
     var result = (Result<T, E>)value;
 
-    var obj = JObject.FromObject(result);
+    var json = new JObject
+    {
+      new JProperty("Kind", result.Kind.ToString())
+    };
 
     if (result.IsOk())
     {
-      obj.Add(new JProperty("Ok", JObject.FromObject(result.Unwrap()!)));
+      json.Add(new JProperty("Ok", result.Unwrap()!));
     }
     else
     {
-      obj.Add(new JProperty("Rrr", JObject.FromObject(result.UnwrapErr()!)));
+      json.Add(new JProperty("Err", result.UnwrapErr()!));
     }
 
-    obj.WriteTo(writer);
+    json.WriteTo(writer);
   }
 
 }
