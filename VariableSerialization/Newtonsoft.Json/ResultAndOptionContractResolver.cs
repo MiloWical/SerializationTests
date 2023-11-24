@@ -4,11 +4,11 @@ using WicalWare.Components.ResultCs;
 
 namespace VariableSerialization.Newtonsoft.Json;
 
-public class ResultContractResolver : DefaultContractResolver
+public class ResultAndOptionContractResolver : DefaultContractResolver
 {
   private Dictionary<Type, JsonContract> contractCache;
 
-  public ResultContractResolver()
+  public ResultAndOptionContractResolver()
   {
     contractCache = [];
   }
