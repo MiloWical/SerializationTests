@@ -8,6 +8,10 @@ public class ResultAndOptionConverterFactory : JsonConverterFactory
 {
   public override bool CanConvert(Type typeToConvert)
   {
+    if(!typeToConvert.IsGenericType)
+    {
+      return false;
+    }
     var genericType = typeToConvert.GetGenericTypeDefinition();
 
     return genericType == typeof(Result<,>) || genericType == typeof(Option<>);
@@ -23,9 +27,13 @@ public class ResultAndOptionConverterFactory : JsonConverterFactory
     {
       converterType = typeof(ResultConverter<,>);
     }
-    else
+    else if(baseType == typeof(Option<>))
     {
       converterType = typeof(OptionConverter<>);
+    }
+    else
+    {
+      throw new ArgumentException($"Could not generate converter for generic type {baseType} of type {typeToConvert}.", nameof(typeToConvert));
     }
 
     var genericTypes = typeToConvert.GenericTypeArguments;
