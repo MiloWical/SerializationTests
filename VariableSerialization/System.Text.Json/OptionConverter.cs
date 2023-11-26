@@ -55,19 +55,6 @@ public class OptionConverter<T> : JsonConverter<Option<T>>
     }
 
     throw new JsonException($"Could not deserialize an Option with kind '{kind}'.");
-    // var kind = Enum.Parse<OptionKind>(json["Kind"]!.ToString());
-        
-    // if(kind == OptionKind.Some)
-    // {
-    //   T val = json["Some"]!.ToObject<T>()!;
-    //   return Option<T>.Some(val);
-    // }
-    // else if (kind == OptionKind.None)
-    // {
-    //   return Option<T>.None();
-    // }
-
-    // throw new ArgumentException($"Count not convert {kind} to {objectType}");
   }
 
   public override void Write(Utf8JsonWriter writer, Option<T> option, JsonSerializerOptions options)
