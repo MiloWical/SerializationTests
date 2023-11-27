@@ -83,5 +83,4 @@ internal class OptionConverter<T> : OptionConverter, IYamlTypeConverter
     }
     emitter.Emit(new MappingEnd());
   }
-
 }

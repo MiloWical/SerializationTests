@@ -24,7 +24,9 @@ try
   // ProcessResultsWithNewtonsoftCustomComponents();
   // ProcessOptionsWithCustomDotNetComponents();
   // ProcessResultsWithCustomDotNetComponents();
-  ProcessOptionsWithCustomYamlDotNetComponents();
+  // ProcessOptionsWithCustomYamlDotNetComponents();
+  ProcessResultsWithCustomYamlDotNetComponents();
+  
 }
 catch (Exception e)
 {
@@ -564,5 +566,75 @@ void ProcessOptionsWithCustomYamlDotNetComponents()
 
   Console.WriteLine("After deserialization:");
   Console.WriteLine(deserializer.Deserialize<Option<int>>(serializedTest).UnwrapOr(-1));
+  Console.WriteLine();
+}
+
+void ProcessResultsWithCustomYamlDotNetComponents()
+{
+  var serializer = new SerializerBuilder()
+    .WithResultAndOptionTypeConverter()
+    .Build();
+
+  var deserializer = new DeserializerBuilder()
+    .WithResultAndOptionTypeConverter()
+    .Build();
+
+  Console.ForegroundColor = ConsoleColor.DarkGreen;
+  Console.WriteLine("===== RESULT.ERR (YamlDotNet) =====");
+  Console.WriteLine();
+
+  var resultTest = Result<int, string>.Err("Bad mojo.");
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(resultTest.UnwrapErr());
+  Console.WriteLine();
+
+  var serializedTest = serializer.Serialize(resultTest);
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(deserializer.Deserialize<Result<int, string>>(serializedTest).UnwrapErr());
+  Console.WriteLine();
+
+  Console.WriteLine("===== RESULT.OK (YamlDotNet) =====");
+  Console.WriteLine();
+
+  resultTest = Result<int, string>.Ok(55);
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(resultTest.UnwrapOr(-1));
+  Console.WriteLine();
+
+  serializedTest = serializer.Serialize(resultTest);
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(deserializer.Deserialize<Result<int, string>>(serializedTest).UnwrapOr(-1));
+  Console.WriteLine();
+
+  Console.ForegroundColor = ConsoleColor.DarkRed;
+  Console.WriteLine("===== RESULT.OK (YamlDotNet) =====");
+  Console.WriteLine();
+
+  resultTest = Result<int, string>.Ok(99);
+
+  Console.WriteLine("Before serialization:");
+  Console.WriteLine(resultTest.UnwrapOr(-1));
+  Console.WriteLine();
+
+  serializedTest = serializer.Serialize(resultTest);
+
+  Console.WriteLine("Serialized object:");
+  Console.WriteLine(serializedTest);
+  Console.WriteLine();
+
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(deserializer.Deserialize<Result<int, string>>(serializedTest).UnwrapOr(-1));
   Console.WriteLine();
 }
