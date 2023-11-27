@@ -523,6 +523,10 @@ void ProcessOptionsWithCustomYamlDotNetComponents()
     .WithResultAndOptionTypeConverter()
     .Build();
 
+  var deserializer = new DeserializerBuilder()
+    .WithResultAndOptionTypeConverter()
+    .Build();
+
   Console.ForegroundColor = ConsoleColor.DarkMagenta;
   Console.WriteLine("===== OPTION.NONE (YamlDotNet) =====");
   Console.WriteLine();
@@ -539,9 +543,9 @@ void ProcessOptionsWithCustomYamlDotNetComponents()
   Console.WriteLine(serializedTest);
   Console.WriteLine();
 
-  // Console.WriteLine("After deserialization:");
-  // Console.WriteLine(JsonSerializer.Deserialize<Option<int>>(serializedTest, serializerOptions)!.Kind);
-  // Console.WriteLine();
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(deserializer.Deserialize<Option<int>>(serializedTest).Kind);
+  Console.WriteLine();
 
   Console.WriteLine("===== OPTION.SOME (YamlDotNet) =====");
   Console.WriteLine();
@@ -558,7 +562,7 @@ void ProcessOptionsWithCustomYamlDotNetComponents()
   Console.WriteLine(serializedTest);
   Console.WriteLine();
 
-  // Console.WriteLine("After deserialization:");
-  // Console.WriteLine(JsonSerializer.Deserialize<Option<int>>(serializedTest, serializerOptions)!.UnwrapOr(-1));
-  // Console.WriteLine();
+  Console.WriteLine("After deserialization:");
+  Console.WriteLine(deserializer.Deserialize<Option<int>>(serializedTest).UnwrapOr(-1));
+  Console.WriteLine();
 }

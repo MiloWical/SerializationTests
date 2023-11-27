@@ -13,13 +13,13 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
   internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
     : this(serializerBuilder, new DeserializerBuilder())
   {
-    
+
   }
 
   internal ResultAndOptionTypeConverter(DeserializerBuilder deserializerBuilder)
     : this(new SerializerBuilder(), deserializerBuilder)
   {
-    
+
   }
 
   internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
@@ -28,22 +28,22 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
     internalDeserializer = deserializerBuilder.Build();
   }
 
-  public bool Accepts(Type type) => 
+  public bool Accepts(Type type) =>
    OptionConverter.AcceptsGeneric(type) || ResultConverter.AcceptsGeneric(type);
 
   public object? ReadYaml(IParser parser, Type type)
   {
-    if(converterCache.TryGetValue(type, out var converter))
+    if (converterCache.TryGetValue(type, out var converter))
     {
       return converter.ReadYaml(parser, type);
     }
 
-    if(OptionConverter.AcceptsGeneric(type))
+    if (OptionConverter.AcceptsGeneric(type))
     {
       converter = CreateConverter(type, typeof(OptionConverter<>));
     }
 
-    else if(ResultConverter.AcceptsGeneric(type))
+    else if (ResultConverter.AcceptsGeneric(type))
     {
       converter = CreateConverter(type, typeof(ResultConverter<,>));
     }
@@ -59,18 +59,18 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
 
   public void WriteYaml(IEmitter emitter, object? value, Type type)
   {
-    if(converterCache.TryGetValue(type, out var converter))
+    if (converterCache.TryGetValue(type, out var converter))
     {
       converter.WriteYaml(emitter, value, type);
       return;
     }
 
-    if(OptionConverter.AcceptsGeneric(type))
+    if (OptionConverter.AcceptsGeneric(type))
     {
       converter = CreateConverter(type, typeof(OptionConverter<>));
     }
 
-    else if(ResultConverter.AcceptsGeneric(type))
+    else if (ResultConverter.AcceptsGeneric(type))
     {
       converter = CreateConverter(type, typeof(ResultConverter<,>));
     }
@@ -96,7 +96,5 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
         [internalSerializer, internalDeserializer],
         null // CultureInfo => null = default
       ) as IYamlTypeConverter;
-
-      //BindingFlags.Instance | BindingFlags.NonPublic
   }
 }

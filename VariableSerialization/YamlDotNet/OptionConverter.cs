@@ -27,7 +27,40 @@ internal class OptionConverter<T> : OptionConverter, IYamlTypeConverter
 
   public object? ReadYaml(IParser parser, Type type)
   {
-    throw new NotImplementedException();
+    OptionKind kind = (OptionKind)(-1);
+    T? val = default;
+    parser.Consume<MappingStart>();
+
+    while(parser.Current!.GetType() != typeof(MappingEnd))
+    {
+      if(((Scalar)parser.Current).Value == "Kind")
+      {
+        parser.Consume<Scalar>();
+        kind = Enum.Parse<OptionKind>(((Scalar)parser.Current).Value);
+        parser.Consume<Scalar>();
+      }
+
+      else if(((Scalar)parser.Current).Value == "Some")
+      {
+        parser.Consume<Scalar>();
+        val = deserializer.Deserialize<T>(((Scalar)parser.Current).Value);
+        parser.Consume<Scalar>();
+      }
+    }
+
+    parser.Consume<MappingEnd>();
+    
+    if(kind == OptionKind.None)
+    {
+      return Option<T>.None();
+    }
+
+    if(kind == OptionKind.Some)
+    {
+      return Option<T>.Some(val!);
+    }
+
+    throw new YamlException($"Could not parse Option<{typeof(T)}>.");
   }
 
   public void WriteYaml(IEmitter emitter, object? value, Type type)

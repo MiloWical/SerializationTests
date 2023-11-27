@@ -8,4 +8,9 @@ public static class ResultAndOptionTypeConverterExtensions
   { 
     return serializerBuilder.WithTypeConverter(new ResultAndOptionTypeConverter(serializerBuilder));
   }
+
+  public static DeserializerBuilder WithResultAndOptionTypeConverter(this DeserializerBuilder deserializerBuilder)
+  { 
+    return deserializerBuilder.WithTypeConverter(new ResultAndOptionTypeConverter(deserializerBuilder));
+  }
 }
