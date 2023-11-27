@@ -5,17 +5,24 @@ using YamlDotNet.Serialization;
 
 namespace VariableSerialization.YamlDotNet;
 
-public class OptionConverter
+internal class OptionConverter
 {
    public static bool AcceptsGeneric(Type type) => 
     type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Option<>);
 }
 
-public class OptionConverter<T>(ISerializer serializer, IDeserializer deserializer) : OptionConverter, IYamlTypeConverter
+internal class OptionConverter<T> : OptionConverter, IYamlTypeConverter
 {
-  private readonly ISerializer serializer = serializer;
+  private readonly ISerializer serializer;
 
-  private readonly IDeserializer deserializer = deserializer;
+  private readonly IDeserializer deserializer;
+
+  internal OptionConverter(ISerializer serializer, IDeserializer deserializer)
+  {
+    this.serializer = serializer;
+    this.deserializer = deserializer;
+  }
+
   public bool Accepts(Type type) => AcceptsGeneric(type);
 
   public object? ReadYaml(IParser parser, Type type)

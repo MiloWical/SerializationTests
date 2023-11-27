@@ -519,9 +519,9 @@ void ProcessResultsWithCustomDotNetComponents()
 
 void ProcessOptionsWithCustomYamlDotNetComponents()
 {
-  var serializerBuilder = new SerializerBuilder();
-  serializerBuilder = serializerBuilder.WithTypeConverter(new ResultAndOptionTypeConverter(serializerBuilder));
-  var serializer = serializerBuilder.Build();
+  var serializer = new SerializerBuilder()
+    .WithResultAndOptionTypeConverter()
+    .Build();
 
   Console.ForegroundColor = ConsoleColor.DarkMagenta;
   Console.WriteLine("===== OPTION.NONE (YamlDotNet) =====");

@@ -4,24 +4,29 @@ using YamlDotNet.Serialization;
 
 namespace VariableSerialization.YamlDotNet;
 
-public class ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder) : IYamlTypeConverter
+internal class ResultAndOptionTypeConverter : IYamlTypeConverter
 {
-  private readonly ISerializer internalSerializer = serializerBuilder.Build();
-  private readonly IDeserializer internalDeserializer = deserializerBuilder.Build();
+  private readonly ISerializer internalSerializer;
+  private readonly IDeserializer internalDeserializer;
   private readonly Dictionary<Type, IYamlTypeConverter> converterCache = [];
 
-  public ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
+  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
     : this(serializerBuilder, new DeserializerBuilder())
   {
     
   }
 
-  public ResultAndOptionTypeConverter(DeserializerBuilder deserializerBuilder)
+  internal ResultAndOptionTypeConverter(DeserializerBuilder deserializerBuilder)
     : this(new SerializerBuilder(), deserializerBuilder)
   {
     
   }
 
+  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
+  {
+    internalSerializer = serializerBuilder.Build();
+    internalDeserializer = deserializerBuilder.Build();
+  }
 
   public bool Accepts(Type type) => 
    OptionConverter.AcceptsGeneric(type) || ResultConverter.AcceptsGeneric(type);
@@ -83,8 +88,15 @@ public class ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, D
   {
     var genericTypes = optionType.GenericTypeArguments;
     var converterInstanceType = converterType.MakeGenericType(genericTypes);
+
     return Activator.CreateInstance(
-      converterInstanceType,
-      [internalSerializer, internalDeserializer]) as IYamlTypeConverter;
+        converterInstanceType,
+        BindingFlags.Instance | BindingFlags.NonPublic,
+        null, // Binder => null = default
+        [internalSerializer, internalDeserializer],
+        null // CultureInfo => null = default
+      ) as IYamlTypeConverter;
+
+      //BindingFlags.Instance | BindingFlags.NonPublic
   }
 }

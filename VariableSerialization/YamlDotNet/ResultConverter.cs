@@ -4,17 +4,23 @@ using YamlDotNet.Serialization;
 
 namespace VariableSerialization.YamlDotNet;
 
-public class ResultConverter
+internal class ResultConverter
 {
   public static bool AcceptsGeneric(Type type) =>
     type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Result<,>);
 }
 
-public class ResultConverter<T, E>(ISerializer serializer, IDeserializer deserializer) : ResultConverter, IYamlTypeConverter
+internal class ResultConverter<T, E> : ResultConverter, IYamlTypeConverter
 {
-  private readonly ISerializer serializer = serializer;
+  private readonly ISerializer serializer;
 
-  private readonly IDeserializer deserializer = deserializer;
+  private readonly IDeserializer deserializer;
+
+  internal ResultConverter(ISerializer serializer, IDeserializer deserializer)
+  {
+    this.serializer = serializer;
+    this.deserializer = deserializer;
+  }
 
   public bool Accepts(Type type) => AcceptsGeneric(type);
 
