@@ -37,21 +37,23 @@ public class ResultConverter<T,E> : JsonConverter
 
     var result = (Result<T, E>)value;
 
-    var json = new JObject
-    {
-      new JProperty("Kind", result.Kind.ToString())
-    };
+    writer.WriteStartObject();
 
-    if (result.IsOk())
+    writer.WritePropertyName("Kind");
+    serializer.Serialize(writer, result.Kind.ToString());
+
+    if(result.IsOk())
     {
-      json.Add(new JProperty("Ok", result.Unwrap()!));
+      writer.WritePropertyName("Ok");
+      serializer.Serialize(writer, result.Unwrap());
     }
-    else
+    else if(result.IsErr())
     {
-      json.Add(new JProperty("Err", result.UnwrapErr()!));
+      writer.WritePropertyName("Err");
+      serializer.Serialize(writer, result.UnwrapErr());
     }
 
-    json.WriteTo(writer);
+    writer.WriteEndObject();
   }
 
 }

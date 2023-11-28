@@ -36,17 +36,18 @@ public class OptionConverter<T> : JsonConverter
 
     var option = (Option<T>)value;
 
-    var json = new JObject
-    {
-      new JProperty("Kind", option.Kind.ToString())
-    };
+    writer.WriteStartObject();
 
-    if (option.IsSome())
+    writer.WritePropertyName("Kind");
+    serializer.Serialize(writer, option.Kind.ToString());
+
+    if(option.IsSome())
     {
-      json.Add(new JProperty("Some", option.Unwrap()));
+      writer.WritePropertyName("Some");
+      serializer.Serialize(writer, option.Unwrap());
     }
 
-    json.WriteTo(writer);
+    writer.WriteEndObject();
   }
 
 }

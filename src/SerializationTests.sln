@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VariableSerialization", "VariableSerialization\VariableSerialization.csproj", "{4F5865C0-5519-405B-AC66-5C4E66B11055}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VariableSerializationTests", "..\test\VariableSerializationTests\VariableSerializationTests.csproj", "{AED87B1A-C25A-40BD-BFBF-8911DFBA8AC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{4F5865C0-5519-405B-AC66-5C4E66B11055}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F5865C0-5519-405B-AC66-5C4E66B11055}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F5865C0-5519-405B-AC66-5C4E66B11055}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED87B1A-C25A-40BD-BFBF-8911DFBA8AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED87B1A-C25A-40BD-BFBF-8911DFBA8AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED87B1A-C25A-40BD-BFBF-8911DFBA8AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED87B1A-C25A-40BD-BFBF-8911DFBA8AC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
