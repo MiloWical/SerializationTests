@@ -6,33 +6,23 @@ namespace VariableSerialization.YamlDotNet;
 
 internal class ResultAndOptionTypeConverter : IYamlTypeConverter
 {
-  private ISerializer? internalSerializer;
-  private IDeserializer? internalDeserializer;
-  private bool initialized;
+  private readonly Lazy<ISerializer?> internalSerializer;
+  private readonly Lazy<IDeserializer?> internalDeserializer;
   private static readonly Dictionary<Type, IYamlTypeConverter> converterCache = [];
 
-  internal ResultAndOptionTypeConverter()
+  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
+    : this(serializerBuilder, null!)
+  { }
+
+  internal ResultAndOptionTypeConverter(DeserializerBuilder deserializerBuilder)
+    : this(null!, deserializerBuilder)
+  { }
+
+  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
   {
-    initialized = false;
-  }
+    internalSerializer = new Lazy<ISerializer?>(() => InitializeSerializer(serializerBuilder));
 
-  internal void Initialize(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
-  {
-    if (initialized)
-    {
-      throw new InvalidOperationException("Cannot initialize a ResultAndOptionTypeConverter that is already initialized.");
-    }
-    if(serializerBuilder != null)
-    {
-      internalSerializer = serializerBuilder.Build();
-    }
-
-    if(deserializerBuilder != null)
-    {
-      internalDeserializer = deserializerBuilder.Build();
-    }
-
-    initialized = true;
+    internalDeserializer = new Lazy<IDeserializer?>(() => InitializeDeserializer(deserializerBuilder));
   }
 
   public bool Accepts(Type type) =>
@@ -100,8 +90,32 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
         converterInstanceType,
         BindingFlags.Instance | BindingFlags.NonPublic,
         null, // Binder => null = default
-        [internalSerializer, internalDeserializer],
+        [internalSerializer.Value, internalDeserializer.Value],
         null // CultureInfo => null = default
       ) as IYamlTypeConverter;
+  }
+
+  private static ISerializer InitializeSerializer(SerializerBuilder builder)
+  {
+    ISerializer serializer = null!;
+
+    if(builder != null)
+    {
+      serializer = builder.Build();
+    }
+
+    return serializer;
+  }
+
+  private static IDeserializer InitializeDeserializer(DeserializerBuilder builder)
+  {
+    IDeserializer deserializer = null!;
+
+    if(builder != null)
+    {
+      deserializer = builder.Build();
+    }
+
+    return deserializer;
   }
 }
