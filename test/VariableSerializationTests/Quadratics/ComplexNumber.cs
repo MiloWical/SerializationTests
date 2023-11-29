@@ -7,7 +7,7 @@ public class ComplexNumber
   public Option<double> RealPart { get; init; }
   public Option<double> ComplexPart{ get; init; }
 
-  public bool IsReal => ComplexPart.IsSomeAnd(c => c == 0.0);
+  public bool IsReal => ComplexPart.IsNone();
 
   public override string ToString()
   {

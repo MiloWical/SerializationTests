@@ -11,8 +11,8 @@ public class YamlDotNetSerializer
   static YamlDotNetSerializer()
   {
     serializer = new SerializerBuilder()
-    .WithResultAndOptionTypeConverter()
-    .Build();
+      .WithResultAndOptionTypeConverter()
+      .Build();
 
     deserializer = new DeserializerBuilder()
       .WithResultAndOptionTypeConverter()

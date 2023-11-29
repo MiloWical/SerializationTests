@@ -6,26 +6,33 @@ namespace VariableSerialization.YamlDotNet;
 
 internal class ResultAndOptionTypeConverter : IYamlTypeConverter
 {
-  private readonly ISerializer internalSerializer;
-  private readonly IDeserializer internalDeserializer;
+  private ISerializer? internalSerializer;
+  private IDeserializer? internalDeserializer;
+  private bool initialized;
   private static readonly Dictionary<Type, IYamlTypeConverter> converterCache = [];
 
-  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
-    : this(serializerBuilder, new DeserializerBuilder())
+  internal ResultAndOptionTypeConverter()
   {
-
+    initialized = false;
   }
 
-  internal ResultAndOptionTypeConverter(DeserializerBuilder deserializerBuilder)
-    : this(new SerializerBuilder(), deserializerBuilder)
+  internal void Initialize(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
   {
+    if (initialized)
+    {
+      throw new InvalidOperationException("Cannot initialize a ResultAndOptionTypeConverter that is already initialized.");
+    }
+    if(serializerBuilder != null)
+    {
+      internalSerializer = serializerBuilder.Build();
+    }
 
-  }
+    if(deserializerBuilder != null)
+    {
+      internalDeserializer = deserializerBuilder.Build();
+    }
 
-  internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder, DeserializerBuilder deserializerBuilder)
-  {
-    internalSerializer = serializerBuilder.Build();
-    internalDeserializer = deserializerBuilder.Build();
+    initialized = true;
   }
 
   public bool Accepts(Type type) =>
