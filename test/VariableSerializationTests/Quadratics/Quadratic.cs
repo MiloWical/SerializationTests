@@ -10,18 +10,16 @@ public class Quadratic
 
   private QuadraticSolution? solution;
 
-  public QuadraticSolution Solution
+  public QuadraticSolution Solution()
   {
-    get
+    if (solution == null)
     {
-      if (solution == null)
-      {
-        var discriminant = Math.Pow(B, 2) - (4 * A * C);
+      var discriminant = Math.Pow(B, 2) - (4 * A * C);
 
-        if (discriminant >= 0)
-        {
-          solution = new QuadraticSolution([
-            new ComplexNumber{
+      if (discriminant >= 0)
+      {
+        solution = new QuadraticSolution([
+          new ComplexNumber{
               RealPart = Option<double>.Some(((-1 * B) + Math.Sqrt(discriminant)) / (2 * A)),
               ComplexPart = Option<double>.None()
             },
@@ -30,11 +28,11 @@ public class Quadratic
               ComplexPart = Option<double>.None()
             },
           ]);
-        }
-        else
-        {
-          solution = new QuadraticSolution([
-            new ComplexNumber{
+      }
+      else
+      {
+        solution = new QuadraticSolution([
+          new ComplexNumber{
               RealPart = Option<double>.Some(-1 * B / (2 * A)),
               ComplexPart = Option<double>.Some(Math.Sqrt(-1 * discriminant) / (2 * A))
             },
@@ -43,12 +41,11 @@ public class Quadratic
               ComplexPart = Option<double>.Some(-1 * Math.Sqrt(-1 * discriminant) / (2 * A))
             },
           ]);
-        }
-
       }
 
-      return solution;
     }
+
+    return solution;
   }
 
   public override string ToString()

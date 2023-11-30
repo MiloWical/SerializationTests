@@ -8,7 +8,7 @@ internal class ResultAndOptionTypeConverter : IYamlTypeConverter
 {
   private readonly Lazy<ISerializer?> internalSerializer;
   private readonly Lazy<IDeserializer?> internalDeserializer;
-  private static readonly Dictionary<Type, IYamlTypeConverter> converterCache = [];
+  private readonly Dictionary<Type, IYamlTypeConverter> converterCache = [];
 
   internal ResultAndOptionTypeConverter(SerializerBuilder serializerBuilder)
     : this(serializerBuilder, null!)
